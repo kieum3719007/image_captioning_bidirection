@@ -1,15 +1,16 @@
 import tensorflow as tf
 import numpy as np
 BATCH_SIZE = 32
-IMAGE_INPUT_SHAPE = (3, 384, 384)
+IMAGE_INPUT_SHAPE = (3, 224, 224)
 train_step_signature = [
     tf.TensorSpec(shape=(BATCH_SIZE, *IMAGE_INPUT_SHAPE), dtype=tf.float32),
     tf.TensorSpec(shape=(BATCH_SIZE, 40), dtype=tf.int32),
     tf.TensorSpec(shape=(BATCH_SIZE, 40), dtype=tf.int32),
+    tf.TensorSpec(shape=(BATCH_SIZE, 40), dtype=tf.int32)
 ]
 
 
-def train(model, loss, optimizer, ckpt_manager):
+def train(model, _loss, optimizer, ckpt_manager):
 
     @tf.function(input_signature=train_step_signature)
     def train_step(inp, seq, seq_bkw, mask):
@@ -41,8 +42,8 @@ def train(model, loss, optimizer, ckpt_manager):
         with tf.GradientTape() as tape:
             predictions, predictions_bkw = model(inp, tar_inp, tar_inp_bkw,
                                                          training=True)
-            loss = loss(tar_real["input_ids"], predictions)
-            loss_bkw = loss(tar_real_bkw["input_ids"], predictions_bkw)
+            loss = _loss(tar_real["input_ids"], predictions)
+            loss_bkw = _loss(tar_real_bkw["input_ids"], predictions_bkw)
 
             loss = (loss + loss_bkw)/2
 
@@ -58,10 +59,10 @@ def train(model, loss, optimizer, ckpt_manager):
         print("\nStart of epoch %d" % (epoch + 1,))
         for step in range(5):
             # print(inp/.shape)
-            inp = np.random.uniform(0, 1, (32, 3, 384, 384))
+            inp = np.random.uniform(0, 1, (32, 3, 224, 224))
             seq = np.random.randint(1, 100, size=(32, 40))
             mask = np.random.randint(0, 1, size=(32, 40))
-            loss_value = train_step(inp, seq, mask)
+            loss_value = train_step(inp, seq, seq, mask)
             if step % 50 == 0:
                 print(
                     "Training loss (for one batch) at step %d: %.4f"

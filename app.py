@@ -8,7 +8,7 @@ from core.image_captioning import load_weight, MODEL
 from core.image_utils import preproccess_image
 
 app = Flask(__name__)
-image_size = (384, 384)
+image_size = (224, 224)
 
 def transform_image(image_bytes):
     image = Image.open(io.BytesIO(image_bytes))

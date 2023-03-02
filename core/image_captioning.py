@@ -134,6 +134,4 @@ except:
     print("Load weight after train")
     load_weight()
 
-
-
     
