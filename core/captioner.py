@@ -10,7 +10,7 @@ class Captioner(tf.Module):
   def __init__(self, transformer):
     self.transformer = transformer
 
-  def __call__(self, image, max_length=40):
+  def __call__(self, image, max_length=80):
     # input sentence is portuguese, hence adding the start and end token
     image_input = self.transformer.image_preprocessor(image, return_tensors="tf")
     input_ids = tf.convert_to_tensor([[self.transformer.tokenizer.cls_token_id]], dtype=tf.int64)
