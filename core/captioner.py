@@ -1,6 +1,5 @@
-import numpy as np
 import tensorflow as tf
-from core.image_captioning import TOKERNIZER, MODEL
+from core.image_captioning import TOKERNIZER
 
 
 START = TOKERNIZER.cls_token_id
@@ -39,5 +38,3 @@ class Captioner(tf.Module):
     tokens = self.transformer.tokenizer.convert_ids_to_tokens(output)
     text = self.transformer.tokenizer.convert_tokens_to_string(tokens)
     return text
-
-CAPTIONER = Captioner(MODEL)
